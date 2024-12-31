@@ -1,0 +1,17 @@
+{
+    "name": "eshod/eshod-security",
+    "discription": "Simple php framework developed by Sam Technology",
+    "bin": [
+        "sam.php"
+    ],
+    "autoload": {
+        "psr-4": {
+            "sam\\": "/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php install.php"
+        ]
+    }
+}
