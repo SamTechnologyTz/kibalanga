@@ -160,15 +160,45 @@ Session::check();
 
     <!-- Main Content -->
     <div class="container">
-        <h1>Welcome to UTPC Personal Training!</h1>
-        <p>
-            Thank you for choosing UTPC for your personal training needs. 
-            We are committed to helping you achieve your fitness goals through personalized training programs.
-        </p>
-        <p>
-            Please take a moment to complete our consultation questionnaire. Your answers will help us tailor a training plan that suits your specific needs and preferences.
-        </p>
-        <a href="/questionnaire" class="btn">Start Questionnaire</a>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        ul {
+            list-style-type: square;
+            margin-left: 20px;
+        }
+    </style>
+
+    <h1>Welcome to Kibalanga – Your Trusted Solution Partner</h1>
+
+    <p>Thank you for choosing Kibalanga! We're excited to have you onboard. Below is a deeper look into what we offer and how we can help you achieve your goals.</p>
+
+    <h2>Who We Are</h2>
+    <p>Kibalanga is a comprehensive framework designed to provide efficient, reliable, and secure solutions for your web development and technical needs. Whether you're building a small project or scaling up to enterprise-level applications, Kibalanga has the tools to ensure success.</p>
+
+    <h2>What We Offer</h2>
+    <ul>
+        <li><strong>Customizable Web Solutions</strong>: Kibalanga provides flexible frameworks and packages tailored to your unique requirements. From simple websites to complex platforms, we support a wide range of projects.</li>
+        <li><strong>Seamless Integration</strong>: We help integrate advanced features into your platform, ensuring your systems work smoothly together. Whether you're integrating third-party services or creating custom solutions, Kibalanga simplifies the process.</li>
+        <li><strong>Support & Maintenance</strong>: Our dedicated team offers ongoing support to ensure your project remains up-to-date and runs efficiently. We handle regular updates, bug fixes, and security patches, so you can focus on growing your business.</li>
+    </ul>
+
+    <h2>Why Choose Kibalanga?</h2>
+    <ul>
+        <li><strong>Security</strong>: Your data and systems are in safe hands. Kibalanga’s design prioritizes security, helping protect sensitive information and ensuring that your users' privacy is respected.</li>
+        <li><strong>Scalability</strong>: As your project grows, Kibalanga grows with you. Our frameworks and solutions are scalable, enabling you to expand without worrying about performance or reliability.</li>
+        <li><strong>Tailored Solutions</strong>: We work with you to understand your unique needs and deliver solutions that match your business objectives. Whether you're in e-commerce, education, or any other sector, Kibalanga has a solution for you.</li>
+    </ul>
+
+    <h2>What’s Next?</h2>
+    <p>If you’re ready to start building or need assistance, our team is here to guide you every step of the way. Explore our documentation for in-depth guides on how to use our platform, or get in touch with our support team for personalized help. We’re committed to your success and look forward to helping you build something extraordinary.</p>
+
     </div>
 
     <script>
