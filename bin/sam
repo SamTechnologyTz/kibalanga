@@ -53,29 +53,33 @@ function installer() {
     $tempSession = bin2hex(random_bytes(15)); //app_key(6);
     
     try {
-        $db = new PDO("sqlite:databse.db");
+        $db = new PDO("sqlite:databases/databse.sqlite");
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
         $QUERI = "
-        CREATE TABLE IF NOTEXISTS jobs (
+        CREATE TABLE IF NOT EXISTS jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             app_key TEXT NOT NULL,
             tempsession TEXT NOT NULL,
             created_at DATATIME DEFAULT CURRENT_TIMESTAMP
         );
         ";
+
+        $db->exec($QUERI);
     
         if ($QUERI) {
             echo 'configuration complete!';
+            echo '\n\n';
         }
     
-        $sql = "INSERT INTO `jobs` SET app_key=:appkey, tempsession=:tempsession";
+        $sql = "INSERT INTO `jobs` (app_key, tempsession) VALUES (:appkey, :tempsession)";
         $stmt = $db->prepare($sql);
-        $stmt->bindParam(":appkey", $app_key, PDO::PARAM_STR);
-        $stmt->bindParam(":tempsession", $tempSession, PDO::PARAM_STR);
+        // $stmt->bindParam(":appkey", $app_key, PDO::PARAM_STR);
+        // $stmt->bindParam(":tempsession", $tempSession, PDO::PARAM_STR);
         
-        if ($stmt->execute()) {
+        if ($stmt->execute(['appkey' => $app_key, 'tempsession' => $tempSession])) {
             echo "App key created successful!";
+            echo "\n\n";
         }
     
     } catch (PDOException $e) {
@@ -84,8 +88,7 @@ function installer() {
     
     // tr
     $envexample = ".env.example";
-    $envTemplate = '
-#APP INFO
+    $envTemplate = '#APP INFO
 APP_NAME=SAM OCHU
 APP_ENV=loacal
 APP_KEY='.$app_key.'
@@ -97,6 +100,8 @@ DB_HOST=127.0.0.1
 DB_NAME=sam
 DB_USER=root
 DB_PASSWORD=
+
+DEV=SAM TECHNOLOGY
 ';
     // caniuse-lite is outdated. Please run: npx update-browserslist-db@latest
     

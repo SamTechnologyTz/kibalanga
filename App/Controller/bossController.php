@@ -1,9 +1,11 @@
+
 <?php
+// php framework by SAM TECHNOLOGY.
+// customise as you wish
 
-require "App/Model/user.php";
+require "App/Model/boss.php";
 
-
-class BossController
+class bossController
 {
     // 
     public function index()
@@ -11,56 +13,50 @@ class BossController
         // 
     }
 
-    public function user($session_id)
+    public function application()
     {
-        $user = new User();
+        $app = new boss();
+        $response = $app->applications();
+        return $response;
+    }
 
+    public function readone($session_id)
+    {
+        $user = new boss();
         $result = $user->user($session_id);
-
-        if ($result['status'] == 'fail') {
-            return $result['message'];
-        }
-
-        // user info
         return $result;
-        
     }
 
     public function users()
     {
-        $user = new User();
-
-        // $user = $user->paginate(10);
+        $user = new boss();
         $users = $user->readAll();
-
-        // 
         return $users;
-
     }
 
     public function login($request)
     {
-        $user = new User();
+        $user = new boss();
 
-        $email = $request['username'];
+        $email = $request['email'];
         $password = $request["password"];
 
         $result = $user->login($email, $password);
 
         if ($result['status'] == 'success') {
             // process your session
-            // session_start();
-            // $_SESSION['id'] = $result['session_id'];
-            // return $result['session_id'];
+            $_SESSION['uid_boss'] = $result['session_id'];
+            return Redirect::to('dashboard');
+
         } else {
             // error message.
-            return $result['message'];
+            return ['message' => $result['message']];
         }
     }
 
     public function register($request)
     {
-        $user = new User();
+        $user = new boss();
 
         $name = $request['username'];
         $email = $request['email'];
@@ -69,11 +65,43 @@ class BossController
         $result = $user->register($name, $email, $password);
 
         if ($result['status'] == 'success') {
-            // just message
-            return $result['message'];
-        } else {
-            // error message
-            return $result['message'];
+            Redirect::to('login');
         }
+       
+        return ['message' => $result['message']];
+
+    }
+
+    public function update($request)
+    {
+        $boss = new boss();
+        $id = $request['token'];
+        $name = $request['username'];
+        $email = $request['email'];
+        $result = $boss->update($id, $name, $email);
+
+        if ($result['status'] == 'success') {
+            return Redirect::to('dashboard');
+        }
+    }
+
+    public function delete($data)
+    {
+        $boss = new boss();
+
+        $token = $data['token'];
+        $response = $boss->delete($token);
+
+        if ($response['status'] == 'success') {
+            return Redirect::to('logout');
+        } 
+    }
+
+    public function logout()
+    {
+        session_destroy();
+        session_abort();
+
+        return Redirect::to('home');
     }
 }

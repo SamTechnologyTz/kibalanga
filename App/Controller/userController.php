@@ -1,7 +1,5 @@
 <?php
-
 require "App/Model/user.php";
-
 
 class UserController
 {
@@ -36,11 +34,9 @@ class UserController
 
         if ($result['status'] == 'success') {
             // process your session
-            $_SESSION['id'] = $result['session_id'];
-            return [
-                'status' => 'success',
-                'redirect' => 'ochu'
-            ];
+            $_SESSION['token'] = $result['session_id'];
+            return Redirect::to('home');
+
         } else {
             // error message.
             return ['message' => $result['message']];
@@ -58,32 +54,42 @@ class UserController
         $result = $user->register($name, $email, $password);
 
         if ($result['status'] == 'success') {
-            // just message and redirect url
-            return [
-                'status' => 'success',
-                // 'message' => $result['message'],
-                'redirect' => 'login' //callback url where to go after registration
-            ];
+            Redirect::to('login');
         }
-        
-        // if ($result['status'] == 'warning') {
-            // error message
-            return ['message' => $result['message']];
-        // }
+       
+        return ['message' => $result['message']];
+
     }
 
-    public function delete($data)
+    public function update($request)
+    {
+        $user = new user();
+        $id = $request['token'];
+        $name = $request['username'];
+        $email = $request['email'];
+        $result = $user->update($id, $name, $email);
+
+        if ($result['status'] == 'success') {
+            Redirect::to('profile');
+        }
+    }
+
+    public function delete($request)
     {
         $user = new User();
-
-        $token = $data['token'];
+        $token = $request['token'];
         $response = $user->delete($token);
 
         if ($response['status'] == 'success') {
-            return [
-                'status' => 'success',
-                'redirect' => 'logout'
-            ];
+            Redirect::to('logout');
         } 
+    }
+
+    public function logout()
+    {
+        session_destroy();
+        session_abort();
+
+        Redirect::to('home');
     }
 }

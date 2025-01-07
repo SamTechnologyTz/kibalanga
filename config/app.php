@@ -24,9 +24,6 @@ define('APP_NAME', $_ENV['APP_NAME']);
 define('APP_KEY', $_ENV['APP_KEY']);
 define('DEV', $_ENV['DEV']);
 
-define('EMAIL', $_ENV['EMAIL']);
-define('ADDRESS', $_ENV['ADDRESS']);
-
 define('DB_HOST', $_ENV['DB_HOST']);
 define('DB_USER', $_ENV['DB_USER']);
 define('DB_NAME', $_ENV['DB_NAME']);

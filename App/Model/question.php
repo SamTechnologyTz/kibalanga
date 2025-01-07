@@ -2,7 +2,7 @@
 // php framework by SAM TECHNOLOGY
 // Edit as you wish according to Documentation
 
-class application
+class question
 {
     public function readone($id) 
     {
@@ -11,7 +11,7 @@ class application
 
        try {
 
-           $sql = "SELECT * FROM `applications` WHERE id=:id";
+           $sql = "SELECT * FROM `questions` WHERE id=:id";
            $stmt = $kibalanga->prepare($sql);
            $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
@@ -32,77 +32,25 @@ class application
 
     public function readall()
     {
-      //  $sam = new Database();
-      //  $kibalanga = $sam->connect();
+       $sam = new Database();
+       $kibalanga = $sam->connect();
 
-      //  try {
-      //    $sql = "
-      //    SELECT q.*
-      //    FROM questionnaire q
-      //    INNER JOIN (
-      //        SELECT header, MIN(created_at) AS min_created_at
-      //        FROM questionnaire
-      //        GROUP BY header
-      //    ) sub
-      //    ON q.header = sub.header AND q.created_at = sub.min_created_at
-      //    ";
-      //      $stmt = $kibalanga->prepare($sql);
-      //      $stmt->execute();
+       try {
+           $sql = "SELECT * FROM `questions` ";
+           $stmt = $kibalanga->prepare($sql);
 
-      //      if ($stmt->rowCount() !== 0) {
-      //         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-              
-      //         if (!empty($data)) {
-      //          return ['status' => 'success', 'data' => $data];
-      //         }
-              
-      //         return ["message" => "No data found!"];
-      //      }
-           
-      //   } catch (PDOException $e){
-      //      return "Error: " . $e->getMessage();
-      //   }
-     
-      $sam = new Database();
-      $kibalanga = $sam->connect();
-      
-      try {
-          $sql = "
-              SELECT q.*
-              FROM questionnaires q
-              INNER JOIN (
-                  SELECT header, MIN(created_at) AS min_created_at
-                  FROM questionnaires
-                  GROUP BY header
-              ) sub
-              ON q.header = sub.header AND q.created_at = sub.min_created_at
-          ";
-      
-          $stmt = $kibalanga->prepare($sql);
-          $stmt->execute();
-      
-          if ($stmt->rowCount() > 0) {
+           if ($stmt->execute()) {
               $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      
-              return [
-                  'status' => 'success',
-                  'data' => $data
-              ];
-          } else {
-              return [
-                  'status' => 'error',
-                  'message' => 'No rows found!'
-              ];
-          }
-      
-      } catch (PDOException $e) {
-          return [
-              'status' => 'error',
-              'message' => 'Error: ' . $e->getMessage()
-          ];
-      }
-      
-
+              
+              if (empty($data)) {
+                return "No data found!";
+              }
+              return $data;
+           }
+           
+        } catch (PDOException $e){
+           return "Error: " . $e->getMessage();
+        }
     }
 
     public function create($name, $description, $extra) 
@@ -112,7 +60,7 @@ class application
 
         try {
             // Edit according to your database
-            $sql = "INSERT INTO `applications` SET name=:name, description=:description, extra=:extra";
+            $sql = "INSERT INTO `questions` SET name=:name, description=:description, extra=:extra";
             $stmt = $kibalanga->prepare($sql);
             $stmt->bindParam(":name", $name, PDO::PARAM_STR);
             $stmt->bindParam(":description", $description, PDO::PARAM_STR);
@@ -140,7 +88,7 @@ class application
       $kibalanga = $sam->connect();
 
       try {
-         $sql = "UPDATE `applications` SET name=:name, description=:description, extra=:extra WHERE id=:id";
+         $sql = "UPDATE `questions` SET name=:name, description=:description, extra=:extra WHERE id=:id";
          $stmt = $kibalanga->prepare($sql);
          $stmt->bindParam(":name", $name, PDO::PARAM_STR);
          $stmt->bindParam(":descrption", $description, PDO::PARAM_STR);
@@ -167,7 +115,7 @@ class application
       $kibalanga = $sam->connect();
 
       try {
-         $sql = "DELETE FROM `applications` WHERE id=:id";
+         $sql = "DELETE FROM `questions` WHERE id=:id";
          $stmt = $kibalanga->prepare($sql);
          $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 

@@ -3,10 +3,10 @@
 // php framework by SAM TECHNOLOGY.
 // customise as you wish
 
-require "App/Model/application.php";
+require "App/Model/question.php";
 
 
-class applicationController 
+class questionController 
 { 
     //  
     public function index() 
@@ -16,9 +16,9 @@ class applicationController
 
     public function readone($session_id) 
     { 
-        $application = new application(); 
+        $question = new question(); 
 
-        $result = $application->readone($session_id);
+        $result = $question->readone($session_id);
  
         if ($result["status"] == "fail") { 
             return $result["message"]; 
@@ -29,28 +29,27 @@ class applicationController
          
     } 
 
-    public function readall() 
+    public function readAll() 
     { 
-        $application = new application(); 
-        $users = $application->readAll(); 
-        
-        if ($users['status'] == 'success') {
-            return $users['data'];
-        }
-        return $users['message'];
+        $question = new question(); 
+
+        $users = $question->readAll(); 
+
+        //  
+        return $users; 
 
     } 
 
 
     public function create($request) 
     { 
-        $application = new application();
+        $question = new question();
 
         $name = $request["name"]; 
         $description = $request["description"]; 
         $extra = $request["extra"]; 
 
-        $result = $application->create($name, $description, $extra); 
+        $result = $question->create($name, $description, $extra); 
 
         if ($result["status"] == "success") {
            Redirect::to("home"); // path of your destine
@@ -59,14 +58,14 @@ class applicationController
 
     public function update($request) 
     {
-        $application = new application();
+        $question = new question();
 
-        $item1 = $request["item1"];
-        $item2 = $request["item2"];
-        $item3 = $request["item3"];
-        $iterm4 = $request["item3"];
+        $id = $request["item1"];
+        $name = $request["item2"];
+        $description = $request["item3"];
+        $extra = "";
 
-        $result = $application->update($item1, $item2, $item3, $iterm4);
+        $result = $question->update($id, $name, $description, $extra);
 
         if ($result["status"] == "success") {
            Redirect::to("home"); // path of your destine
@@ -76,11 +75,11 @@ class applicationController
     
     public function delete($request)
     {
-        $application = new application();
+        $question = new question();
 
         $delete = $request["id"];
 
-        $result = $application->delete($delete);
+        $result = $question->delete($delete);
 
         if ($result["status"] == "success") {
            return $request["message"];
