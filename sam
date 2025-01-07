@@ -9,8 +9,7 @@ $commands = [
     '| => dev' => ' Developer Contact',
     '| => run:installer' => 'Install all required.
 |
---------------------------------------------------------------->
-    '
+----------------------------------------------------------------------->'
 ];
 
 $command = $argv[1] ?? 'help';
@@ -38,7 +37,6 @@ switch ($command) {
 
     case 'run:installer':
         installer();
-        // echo "sam";
         break;
     
     case 'help':
@@ -92,17 +90,16 @@ function installer() {
 APP_NAME=SAM OCHU
 APP_ENV=loacal
 APP_KEY='.$app_key.'
+APP_URL=http://localhost:8080
 
 #DATABASE INFO
-#USE MYSQL OR SQLITE DATABSE
 DATABASE=mysql 
 DB_HOST=127.0.0.1
 DB_NAME=sam
 DB_USER=root
 DB_PASSWORD=
 
-DEV=SAM TECHNOLOGY
-';
+DEV=SAM TECHNOLOGY';
     // caniuse-lite is outdated. Please run: npx update-browserslist-db@latest
     
     $envna = ".env";
@@ -117,8 +114,6 @@ DEV=SAM TECHNOLOGY
     // exec("composer init");
     // exec("composer install");
     echo '
-    
-    
     
      -------------------------------------
     |                                     |
@@ -140,6 +135,7 @@ function createController($name) {
 // customise as you wish
 
 require "App/Model/'.$name.'.php"; 
+require "App/http/redirect.php";
 
 
 class '.$name.'Controller 
@@ -168,8 +164,12 @@ class '.$name.'Controller
     public function readAll() 
     { 
         $'.$name.' = new '.$name.'(); 
+
         $users = $'.$name.'->readAll(); 
+
+        //  
         return $users; 
+
     } 
 
 
@@ -182,7 +182,10 @@ class '.$name.'Controller
         $extra = $request["extra"]; 
 
         $result = $'.$name.'->create($name, $description, $extra); 
-        return $result; 
+
+        if ($result["status"] == "success") {
+           Redirect::to("home"); // path of your destine
+        }
     }
 
     public function update($request) 
@@ -193,15 +196,12 @@ class '.$name.'Controller
         $item2 = $request["item2"];
         $item3 = $request["item3"];
 
-        // $result = $'.$name.'->update($item1, $item2, $item3);
+        $result = $'.$name.'->update($item1, $item2, $item3);
 
         if ($result["status"] == "success") {
-           return [
-               "status" => "success",
-               "redirect" => "home"
-           ];
+           Redirect::to("home"); // path of your destine
         }
-        return ["message" => $result["message"]];
+        return $result["message"];
     }
     
     public function delete($request)
@@ -213,160 +213,151 @@ class '.$name.'Controller
         $result = $'.$name.'->delete($delete);
 
         if ($result["status"] == "success") {
-           return [
-               "status" => "success",
-               "redirect" => "home"
-           ];
+           return $request["message"];
         }
-        return ["message" => $result["message"]];
+        return $result["message"];
     }
 }
 ';
     $model = "App/Model/".$name.".php";
-    $mtamplate = '
-    <?php
-    // php framework by SAM TECHNOLOGY
-    // Edit as you wish according to Documentation
+    $mtamplate = '<?php
+// php framework by SAM TECHNOLOGY
+// Edit as you wish according to Documentation
 
-    require "core/Database.php";
-    
-    class '.$name.'
+class '.$name.'
+{
+    public function readone($id) 
     {
-        public function readone($id) 
-        {
-           $sam = new Database();
-           $kibalanga = $sam->connect();
-    
-           try {
-    
-               $sql = "SELECT * FROM `'.$name.'s` WHERE id=:id";
-               $stmt = $kibalanga->prepare($sql);
-               $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-    
-               if ($stmt->execute()) {
-                  $data = $stmt->fetch(PDO::FETCH_ASSOC);
-                  
-                  if (empty($data)) {
-                     return "No data found!";
-                  }
-    
-                  return $data;
-               }
-               
-            } catch (PDOException $e){
-               return "Error: " . $e->getMessage();
-            }
-        }
-    
-        public function readall()
-        {
-           $sam = new Database();
-           $kibalanga = $sam->connect();
-    
-           try {
-               $sql = "SELECT * FROM `'.$name.'s` ";
-               $stmt = $kibalanga->prepare($sql);
-    
-               if ($stmt->execute()) {
-                  $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                  
-                  if (empty($data)) {
-                     return "No data found!";
-                  }
-    
-                  return $data;
-               }
-               
-            } catch (PDOException $e){
-               return "Error: " . $e->getMessage();
-            }
-        }
-    
-        public function create($name, $description, $extra) 
-        {
-            $sam = new Database();
-            $kibalanga = $sam->connect();
-    
-            try {
-                // Edit according to your database
-                $sql = "INSERT INTO `'.$name.'s` SET name=:name, description=:description, extra=:extra";
-                $stmt = $kibalanga->prepare($sql);
-                $stmt->bindParam(":name", $name, PDO::PARAM_STR);
-                $stmt->bindParam(":description", $description, PDO::PARAM_STR);
-                $stmt->bindParam(":extra", $extra, PDO::PARAM_STR);
-    
-                if ($stmt->execute()) {
-                   return [
-                      "status" => "success",
-                      "message" => "create successful!"
-                   ];
-                } else {
-                   return [
-                      "message" => "Error: ".$stmt->execute()
-                   ];
-                }
-    
-            } catch(PDOException $e) {
-                return "Error: ".$e->getMessage();
-            }
-        }
-    
-        public function update($name, $description, $extra)
-        {
-          $sam = new Database();
-          $kibalanga = $sam->connect();
-    
-          try {
-             $sql = "UPDATE FROM `'.$name.'s` SET name=:name, description=:description, extra=:extra";
-             $stmt = $kibalanga->prepare($sql);
-             $stmt->bindParam(":name", $name, PDO::PARAM_STR);
-             $stmt->bindParam(":descrption", $description, PDO::PARAM_STR);
-             $stmt->bindParam(":extra", $extra, PDO::PARAM_STR);
-    
-             if ($stmt->execute()) {
-                return [
-                   "status" => "success",
-                   "message" => "update successful!"
-                ];
-             } else {
-                return ["message" => "upadte fail!"];
-             }
-    
-          } catch (PDOException $e) {
-             return $e->getMessage();
-          }
-        }
-    
-        public function delete($id)
-        {
-          $sam = new Database();
-          $kibalanga = $sam->connect();
-    
-          try {
-             $sql = "DELETE FROM `'.$name.'s` WHERE id=:id";
-             $stmt = $kibalanga->prepare($sql);
-             $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-    
-             if ($stmt->execute()) {
-                return [
-                   "status" => "success",
-                   "message" => "Delete successful!"
-                ];
-             } else {
-                return [
-                   "message" => "Delete fail!"
-                ];
-             }
-    
-          } catch (\Throwable $e) {
-             return $e->getMessage();
-          }
+       $sam = new Database();
+       $kibalanga = $sam->connect();
+
+       try {
+
+           $sql = "SELECT * FROM `'.$name.'s` WHERE id=:id";
+           $stmt = $kibalanga->prepare($sql);
+           $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+
+           if ($stmt->execute()) {
+              $data = $stmt->fetch(PDO::FETCH_ASSOC);
+              
+              if (empty($data)) {
+                 return "No data found!";
+              }
+
+              return $data;
+           }
+           
+        } catch (PDOException $e){
+           return "Error: " . $e->getMessage();
         }
     }
-    ?>
-        
-?>
-    ';
+
+    public function readall()
+    {
+       $sam = new Database();
+       $kibalanga = $sam->connect();
+
+       try {
+           $sql = "SELECT * FROM `'.$name.'s` ";
+           $stmt = $kibalanga->prepare($sql);
+
+           if ($stmt->execute()) {
+              $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+              
+              if (empty($data)) {
+                return "No data found!";
+              }
+              return $data;
+           }
+           
+        } catch (PDOException $e){
+           return "Error: " . $e->getMessage();
+        }
+    }
+
+    public function create($name, $description, $extra) 
+    {
+        $sam = new Database();
+        $kibalanga = $sam->connect();
+
+        try {
+            // Edit according to your database
+            $sql = "INSERT INTO `'.$name.'s` SET name=:name, description=:description, extra=:extra";
+            $stmt = $kibalanga->prepare($sql);
+            $stmt->bindParam(":name", $name, PDO::PARAM_STR);
+            $stmt->bindParam(":description", $description, PDO::PARAM_STR);
+            $stmt->bindParam(":extra", $extra, PDO::PARAM_STR);
+
+            if ($stmt->execute()) {
+               return [
+                  "status" => "success",
+                  "message" => "create successful!"
+               ];
+            } else {
+               return [
+                  "message" => "Error: ".$stmt->execute()
+               ];
+            }
+
+        } catch(PDOException $e) {
+            return "Error: ".$e->getMessage();
+        }
+    }
+
+    public function update($id, $name, $description, $extra)
+    {
+      $sam = new Database();
+      $kibalanga = $sam->connect();
+
+      try {
+         $sql = "UPDATE `'.$name.'s` SET name=:name, description=:description, extra=:extra WHERE id=:id";
+         $stmt = $kibalanga->prepare($sql);
+         $stmt->bindParam(":name", $name, PDO::PARAM_STR);
+         $stmt->bindParam(":descrption", $description, PDO::PARAM_STR);
+         $stmt->bindParam(":extra", $extra, PDO::PARAM_STR);
+         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+
+         if ($stmt->execute()) {
+            return [
+               "status" => "success",
+               "message" => "update successful!"
+            ];
+         } else {
+            return ["message" => "upadte fail!"];
+         }
+
+      } catch (PDOException $e) {
+         return $e->getMessage();
+      }
+    }
+
+    public function delete($id)
+    {
+      $sam = new Database();
+      $kibalanga = $sam->connect();
+
+      try {
+         $sql = "DELETE FROM `'.$name.'s` WHERE id=:id";
+         $stmt = $kibalanga->prepare($sql);
+         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+
+         if ($stmt->execute()) {
+            return [
+               "status" => "success",
+               "message" => "Delete successful!"
+            ];
+         } else {
+            return [
+               "message" => "Delete fail!"
+            ];
+         }
+
+      } catch (PDOException $e) {
+         return $e->getMessage();
+      }
+    }
+}
+?>';
     file_put_contents($filname, $template);
     echo '
     -------------------------------------------------->
@@ -409,12 +400,12 @@ function dev () {
 
 function StartServer() {
     echo '
-    ----------------------------------------------------->
-    |
-    |  Start Development server at http://localhost:8080\n
-    |
-    ----------------------------------------------------->
-    ';
+----------------------------------------------------->
+|
+|  Start Development server at http://localhost:8080
+|
+----------------------------------------------------->
+';
     $linkL = "xdg-open http://localhost:8080";
     $linkW = "start http://localhost:8080";
     $linkM = "open http://localhost:8080";
@@ -432,8 +423,8 @@ function StartServer() {
 function showHelp() {
     global $commands;
     echo '
-------------------> Sam CLI - Available commands: <---------------
-    ';
+    
+------------------> Kibalanga CLI - Available commands: <---------------';
     foreach($commands as $cmd => $desc) {
         echo "$cmd - $desc\n";
     }
@@ -587,7 +578,11 @@ function createModel($name) {
     ';
     $filname = "App/Model/{$name}.php";
     file_put_contents($filname, $template);
-    echo "Model {$name} created at {$date}\n";
+    echo "-------------------------------------------
+    |
+    |   Model {$name} created at {$date}\n
+    |
+    -------------------------------------------";
 }
 
 function createView($name) {
@@ -599,6 +594,10 @@ function createView($name) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>'.$name.' | <?php echo APP_NAME; ?></title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/userform.css">
+    <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
     <h1>This is '.$name.' page.</h1>
@@ -607,7 +606,11 @@ function createView($name) {
     ';
     $date = date('H:i:s');
     file_put_contents($filname, $template);
-    echo "View {$name} Created at {$date}\n ";
+    echo "-------------------------------------------
+|
+|   View {$name} created at {$date}
+|
+-------------------------------------------";
 }
 
 ?>

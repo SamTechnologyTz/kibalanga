@@ -1,12 +1,12 @@
 {
-    "name": "kibalanga/kibalanga",
+    "name": "sam/kibalanga-framework",
     "discription": "Simple php framework developed by Sam Technology",
     "bin": [
         "sam.php"
     ],
     "autoload": {
         "psr-4": {
-            "sam\\": "/"
+            "Kibalanga\\": "/"
         }
     },
     "scripts": {
